@@ -81,15 +81,24 @@ function brennancentre_civicrm_alterMailParams(&$params, $context) {
       $heightAttr = $imgTag->getAttribute('height');
       $widthAttr = $imgTag->getAttribute('width');
       if ($styleAttr) {
-        $styleArray = explode('; ', $styleAttr);
+        $styleArray = explode(';', $styleAttr);
         foreach ($styleArray as $key => $value) {
+          if (!$value) {
+            unset($styleArray[$key]);
+          }
           $val = explode(': ', $value);
+          $val[0] = trim($val[0]);
           if (in_array($val[0], array('height', 'width'))) {
             $imgTag->setAttribute($val[0], str_replace('px', '', $val[1]));
             unset($styleArray[$key]);
           }
         }
-        $imgTag->setAttribute('style', implode('; ', $styleArray));
+        if (!empty($styleArray)) {
+          $imgTag->setAttribute('style', implode(';', $styleArray));
+        }
+        else {
+          $imgTag->removeAttribute('style');
+        }
       }
       if ($heightAttr) {
         $imgTag->setAttribute('height', str_replace('px', '', $heightAttr));
@@ -98,7 +107,10 @@ function brennancentre_civicrm_alterMailParams(&$params, $context) {
         $imgTag->setAttribute('width', str_replace('px', '', $widthAttr));
       }
     }
-    $body = $dochtml->getElementsByTagName('body')->item(0);
-    $params['html']= $dochtml->saveHTML($body);
+    $params['html'] = preg_replace(array("/^\<\!DOCTYPE.*?<html><body>/si",
+      "!</body></html>$!si"),
+      "",
+      $dochtml->saveHTML()
+    );
   }
 }
