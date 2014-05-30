@@ -120,7 +120,7 @@ function brennancentre_civicrm_unsubscribeGroups($op, $mailingId, $contactId, &$
     foreach ($groups as $group) {
       $gid = CRM_Core_DAO::singleValueQuery("SELECT g.id FROM civicrm_group g 
       LEFT JOIN civicrm_mailing_group m ON m.entity_id = g.id AND m.entity_table = 'civicrm_group'
-      WHERE m.entity_id = {$group} AND m.group_type = 'Base'");
+      WHERE m.entity_id = {$group} AND g.is_hidden = 1");
       if ($gid) {
         $params = array(
           'contact_id' => $contactId,
