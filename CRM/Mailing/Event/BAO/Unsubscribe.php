@@ -220,6 +220,18 @@ WHERE  email = %2
     if (!empty($base_group_ids)) {
       $baseGroupClause = "OR  $group.id IN(" . implode(', ', $base_group_ids) . ")";
     }
+    // BREN-15
+    if (empty($base_group_ids)) {
+      foreach ($group_ids as $grp) {
+        $sql = CRM_Core_DAO::singleValueQuery("SELECT saved_search_id FROM civicrm_group WHERE id = {$grp}");
+        if ($sql) {
+          CRM_Core_Session::setStatus('The mailing list you are trying to unsubscribe from no longer exists.');
+          $smarty = CRM_Core_Smarty::singleton();
+          $smarty->assign('error', 1);
+          return NULL;
+        }
+      }
+    }
     $do->query("
             SELECT      $group.id as group_id,
                         $group.title as title,
@@ -228,11 +240,13 @@ WHERE  email = %2
             LEFT JOIN   $gc
                 ON      $gc.group_id = $group.id
             WHERE       $group.id IN (" . implode(', ', array_merge($group_ids, $base_group_ids)) . ")
+                AND     $group.is_hidden = 0
                 AND     ($group.saved_search_id is not null
                             OR  ($gc.contact_id = $contact_id
                                 AND $gc.status = 'Added')
                             $baseGroupClause
                         )");
+    
 
     if ($return) {
       $returnGroups = array();
