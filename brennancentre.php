@@ -88,10 +88,44 @@ function brennancentre_civicrm_alterMailParams(&$params, $context) {
           }
           $val = explode(': ', $value);
           $val[0] = trim($val[0]);
-          if (in_array($val[0], array('height', 'width'))) {
-            $imgTag->setAttribute($val[0], str_replace('px', '', $val[1]));
-            unset($styleArray[$key]);
+          switch ($val[0]) {
+          case 'height':
+          case 'width':
+            break;
+          case 'margin':
+          case 'margin-left':
+          case 'margin-right':
+          case 'margin-top':
+          case 'margin-bottom':
+            switch ($val[0]) {
+            case 'margin':
+              $margin = explode(' ', $val[1]);
+              $imgTag->setAttribute('hspace', str_replace('px', '', trim($margin[1])));
+              $imgTag->setAttribute('vspace', str_replace('px', '', trim($margin[0])));
+              unset($styleArray[$key]);
+              $val[0] = '';
+              break;
+            case 'margin-left':
+            case 'margin-right':
+              $val[0] = 'hspace';
+              break;
+            case 'margin-top':
+            case 'margin-bottom':
+              $val[0] = 'vspace';
+              break;
+            }
+            break;
+          case 'float':
+            $val[0] = 'align';              
+            break;
+          default:
+            $val[0] = '';
           }
+          if (empty($val[0])) {
+            continue;
+          }
+          $imgTag->setAttribute($val[0], str_replace('px', '', $val[1]));
+          unset($styleArray[$key]);
         }
         if (!empty($styleArray)) {
           $imgTag->setAttribute('style', implode(';', $styleArray));
