@@ -223,7 +223,7 @@ WHERE  email = %2
     // BREN-15
     if (empty($base_group_ids)) {
       foreach ($group_ids as $grp) {
-        $sql = CRM_Core_DAO::singleValueQuery("SELECT saved_search_id FROM civicrm_group WHERE id = {$grp}");
+        $sql = CRM_Core_DAO::singleValueQuery("SELECT saved_search_id FROM civicrm_group WHERE id = {$grp} AND is_hidden = 1");
         if ($sql) {
           CRM_Core_Session::setStatus('The mailing list you are trying to unsubscribe from no longer exists.');
           $smarty = CRM_Core_Smarty::singleton();
