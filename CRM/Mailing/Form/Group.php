@@ -62,11 +62,13 @@ class CRM_Mailing_Form_Group extends CRM_Contact_Form_Task {
     // when user come from search context.
     $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
     // BREN-19
-    if (!$this->_searchBasedMailing) {
+    if (!$this->_searchBasedMailing && $this->_mailingID) {
       $this->_searchBasedMailing = CRM_Core_DAO::singleValueQuery("SELECT 1 FROM civicrm_group g 
         LEFT JOIN civicrm_mailing_group mg ON mg.entity_id = g.id AND mg.entity_table = 'civicrm_group'
         WHERE mg.group_type = 'Include' AND g.is_hidden = 1 AND mg.mailing_id = {$this->_mailingID}");
-      $this->_flag = TRUE;
+      if ($this->_searchBasedMailing) {
+        $this->_flag = TRUE;
+      }
     }
 
     if ($this->_searchBasedMailing) {
