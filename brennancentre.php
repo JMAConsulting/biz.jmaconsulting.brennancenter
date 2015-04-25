@@ -1,7 +1,7 @@
 <?php
 
 require_once 'brennancentre.civix.php';
-
+define('THANKYOU_SINGUP_PROFILE_ID', 13);
 /**
  * Implementation of hook_civicrm_config
  */
@@ -69,6 +69,39 @@ function brennancentre_civicrm_managed(&$entities) {
   return _brennancentre_civix_civicrm_managed($entities);
 }
 
+function brennancentre_civicrm_buildForm($formName, &$form) {
+  if ($formName == 'CRM_Profile_Form_Edit' && $form->getVar('_gid') == THANKYOU_SINGUP_PROFILE_ID) {
+    $form->_elements[$form->_elementIndex['buttons']]->_elements[0]->_attributes['value'] = ts('Submit');
+    CRM_Core_Resources::singleton()->addStyle('
+      div.crm-profile-name-Thank_you_for_signing_up_ div.crm-submit-buttons span.crm-button-type-cancel
+        {display:none !important;}
+
+      div.crm-profile-name-Thank_you_for_signing_up_ div.crm-submit-buttons span.crm-button-type-next input{  
+        background-color: #df1f0f !important;
+        background-image: linear-gradient(to bottom, #df1f0f, #c41a0c) !important;
+        background-size: 100% auto !important;
+        border: 1px solid #700006  !important;
+        color: #fff !important;
+        width: 124px !important;
+        display: inline-block !important;
+        font-size: 1.2em !important;
+        font-weight: 700 !important;
+        padding: 4px 14px !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        text-transform: uppercase !important;
+      }
+      div.crm-profile-name-Thank_you_for_signing_up_ div.crm-submit-buttons span.crm-button-type-next {
+        border:none !important;
+        background : none !important;
+      }
+      div.crm-profile-name-Thank_you_for_signing_up_ div.crm-submit-buttons {margin-left: auto !important;
+       margin-right: auto !important;
+       width: 496px;
+      }'
+    );
+  }
+}
 
 function brennancentre_civicrm_alterMailParams(&$params, $context) {
   if (!empty($params['html'])) {
