@@ -1627,7 +1627,6 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Contact_Import_Parser {
    */
   function createContact(&$formatted, &$contactFields, $onDuplicate, $contactId = NULL, $requiredCheck = TRUE, $dedupeRuleGroupID = NULL) {
     $dupeCheck = FALSE;
-
     $newContact = NULL;
 
     if (is_null($contactId) && ($onDuplicate != CRM_Import_Parser::DUPLICATE_NOCHECK)) {
@@ -1877,6 +1876,9 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Contact_Import_Parser {
       }
     }
 
+    $fieldsToIgnore = array_keys(CRM_Contact_BAO_Contact::importableFields());
+    $addressFields = array_keys(CRM_Core_DAO_Address::fields());
+    $isupdate = CRM_Contact_Import_Parser_Contact::checkIfUpdate($params, $this->_contactType, $this->_dedupeRuleGroupID, $this->_mapperKeys, $this->_mapperLocType);
     //now format custom data.
     foreach ($params as $key => $field) {
         if (!isset($field)){
@@ -1884,7 +1886,6 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Contact_Import_Parser {
         unset($params[$key]);
         continue;
       }
-      $fieldsToIgnore = array_keys(CRM_Contact_BAO_Contact::importableFields());
       if (is_array($field)) {
         $isAddressCustomField = FALSE;
         foreach ($field as $value) {
@@ -1896,7 +1897,7 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Contact_Import_Parser {
                 break;
               }
               // check if $value does not contain IM provider or phoneType
-              if ((!in_array($name, $fieldsToIgnore)) && ($testForEmpty === '' || $testForEmpty == NULL)) {
+              if ((!in_array($name, $fieldsToIgnore) || (in_array($name, $addressFields) && !$isupdate)) && ($testForEmpty === '' || $testForEmpty == NULL)) {
                 $break = TRUE;
                 break;
               }
@@ -2077,5 +2078,37 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Contact_Import_Parser {
 
     return $allowToCreate;
   }
+
+  public static function checkIfUpdate($params, $contactType, $dedupeRuleGroupID, $mappings, $loc) {
+    require_once 'CRM/Utils/DeprecatedUtils.php';
+    $params['contact_type'] = $contactType;
+    $error = _civicrm_api3_deprecated_contact_check_params($params, TRUE, TRUE, FALSE, $dedupeRuleGroupID);
+    if (!is_null($error)) {
+      if (is_array($error['error_message']['params'][0])) {
+        $cids = $error['error_message']['params'][0];
+      }
+      else {
+        $cids = explode(',', $error['error_message']['params'][0]);
+      }
+      if (count($cids) == 1) {
+        $isPresentField = array_intersect($mappings, array_keys(CRM_Core_DAO_Address::fields()));
+        if (!empty($isPresentField)) {
+          $isPresentFieldKey = key($isPresentField);
+          $contactId = array_shift($cids);
+          // check if address fields is present in mapping
+          $addressParams = array(
+            'contact_id' => $contactId,
+            'location_type_id' => $loc[$isPresentFieldKey],
+          );
+          $address = civicrm_api3('Address', 'get', $addressParams);
+          if (!empty($address['count'])) {
+            return TRUE;
+          }
+        }
+      }
+    }
+    return FALSE;
+  }
+
 }
 
