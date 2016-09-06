@@ -1,7 +1,23 @@
 CRM.$(function($) {
-    $("#signup input.form-submit").click(function () {
-	/* Check if the captcha is complete */
-	validateCaptcha();
+    $("#signup input.recaptchaSubmit").click(function () {
+	/* Check if the captcha is complete */    
+	CRM.$("div.captcha_dialog").dialog({
+	    title: 'Captcha',
+	    modal: true,
+	    height: 200,
+	    width: 350, 
+	    buttons: {
+		"Cancel": function() {
+		    CRM.$(this).dialog("close");
+		},
+		'Submit': function() {
+		    if (validateCaptcha()) {
+			CRM.$(this).dialog("close");
+		    }
+		}
+	    }
+	});
+	return false;
     });
     function validateCaptcha() {
 	if ($("#g-recaptcha-response").val()) {
