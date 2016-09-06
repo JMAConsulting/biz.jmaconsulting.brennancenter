@@ -32,30 +32,35 @@
  * $Id$
  *
  */
- */
-class CRM_Brennancentre_Page_Captcha {
+
+class CRM_Brennancentre_Page_AJAX {
 
   /**
+   * Validate captcha.
    *
-   *
-   * 
+   * @return bool
    */
   public static function validateCaptcha() {
-    $captcha = filter_input($_POST, 'captchaResponse'); // get the captchaResponse parameter sent from our ajax
- 
+    // get the captchaResponse parameter sent from our ajax
+    $captcha = filter_input(INPUT_POST, 'captchaResponse');
+
     /* Check if captcha is filled */
     if (!$captcha) {
-      http_response_code(401); // Return error code if there is no captcha
+      // Return error code if there is no captcha
+      http_response_code(401); 
     }
     $recaptchaKey = '6LczZSkTAAAAAHeZCo8a5FN22Vl7SOvYRRx6MZB0';
     $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaKey}&response={$captcha}");
-    if ($response  == false) {
-      echo 'SPAM';
-      http_response_code(401); // It's SPAM! RETURN SOME KIND OF ERROR
+    $response = json_decode($response);
+    $output = array('isError' => FALSE);
+    if ($response->success  == FALSE) {
+      $field = 'error-codes';
+      $output =  array(
+        'isError' => TRUE,
+        'error_message' => reset($response->$field),
+      );
     }
-    else {
-      // Everything is ok and you can proceed by executing your login, signup, update etc scripts
-    }
+    CRM_Utils_JSON::output($output);
   }
 
 }
