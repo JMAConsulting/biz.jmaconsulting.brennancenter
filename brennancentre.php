@@ -2,6 +2,7 @@
 
 require_once 'brennancentre.civix.php';
 define('THANKYOU_SINGUP_PROFILE_ID', 13);
+define('SINGUP_PROFILE_ID', 18);
 /**
  * Implementation of hook_civicrm_config
  */
@@ -67,6 +68,15 @@ function brennancentre_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  */
 function brennancentre_civicrm_managed(&$entities) {
   return _brennancentre_civix_civicrm_managed($entities);
+}
+
+function brennancentre_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
+  if ('CRM_Profile_Form_Edit' == $formName && $form->getVar('_gid') == SINGUP_PROFILE_ID) {
+    global $user;
+    if ($user->uid == 0 && CRM_Utils_Array::value('htmlForm', $fields)) {
+      $form->setElementError('g-recaptcha-response', NULL);
+    }
+  }
 }
 
 function brennancentre_civicrm_buildForm($formName, &$form) {
