@@ -60,8 +60,12 @@ class CRM_Brennancentre_Page_AJAX {
         'error_message' => reset($response->$field),
       );
     }
-    CRM_Utils_JSON::output($output);
-    exit;
+    self::output($output);
+  }
+
+  public static function output($input) {
+    echo json_encode($input);
+    CRM_Utils_System::civiExit();
   }
 
 }
