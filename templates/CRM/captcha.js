@@ -1,21 +1,21 @@
-CRM.$(function($) {
+$(document).ready(function() {
 
 
 checkCaptcha = function(event) {
 
-CRM.$("div.captcha_dialog").dialog({
+$("div.captcha_dialog").dialog({
             title: 'Captcha',
             modal: true,
             height: 200,
             width: 350,
             buttons: {
                 "Cancel": function() {
-                    CRM.$(this).dialog("close");
+                    $(this).dialog("close");
                     return false;
                 },
                 'Submit': function() {
                     if (validateCaptcha()) {
-                        CRM.$(this).dialog("close");
+                        $(this).dialog("close");
                         $("#submitonce").click();
                     }
                 }
@@ -31,10 +31,7 @@ CRM.$("div.captcha_dialog").dialog({
     });
     function validateCaptcha() {
 	if ($("#g-recaptcha-response").val()) {
-	    var callbackURL = CRM.url('civicrm/ajax/rest', {
-		className: 'CRM_Brennancentre_Page_AJAX',
-		fnName: 'validateCaptcha'
-	    });
+	    var callbackURL = '/civicrm/ajax/rest?className=CRM_Brennancentre_Page_AJAX&fnName=validateCaptcha';
 	    var tdest = $.ajax({
 		type: 'POST',
 		url: callbackURL, // The file we're making the request to
