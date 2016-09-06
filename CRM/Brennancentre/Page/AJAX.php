@@ -61,6 +61,7 @@ class CRM_Brennancentre_Page_AJAX {
       );
     }
     CRM_Utils_JSON::output($output);
+    exit;
   }
 
 }
