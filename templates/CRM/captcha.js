@@ -1,6 +1,13 @@
 jQuery(document).ready(function($) {
+
+    $("form#signup").bind("keypress", function (e) {
+      if (e.keyCode == 13) {
+        return false;
+      }
+    });
+
     checkCaptcha = function(captchanumber) {
-	$("div.captcha_dialog").dialog({
+	$("div.captcha_dialog" + captchanumber).dialog({
             title: 'Captcha',
             modal: true,
             height: 200,
@@ -13,7 +20,7 @@ jQuery(document).ready(function($) {
                 'Submit': function() {
                     if (validateCaptcha(captchanumber)) {
                         $(this).dialog("close");
-                        $("#submitonce").click();
+                        $("#submitonce" + captchanumber).click();
                     }
                 }
             }
@@ -21,13 +28,14 @@ jQuery(document).ready(function($) {
 	});
     }
 
-    $("#submitbutton").click(function (e) {
+    $("#submitbutton, #submitbutton1, #submitbutton2, #submitbutton3").click(function (e) {
 	e.preventDefault();
 	var captchanumber = $(this).attr('captchanumber');
 	checkCaptcha(captchanumber);
 	return true;
     });
-    function validateCaptcha(captchanumber=NULL) {
+
+    function validateCaptcha(captchanumber) {
 	var extraId = '';
 	if (captchanumber) {
             extraId = '-' + captchanumber;
@@ -55,4 +63,5 @@ jQuery(document).ready(function($) {
 	    return false;
 	}
     }
+
 });
