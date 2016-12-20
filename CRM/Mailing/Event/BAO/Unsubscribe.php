@@ -275,16 +275,21 @@ WHERE  email = %2
           list($total, $removed, $notremoved) = CRM_Contact_BAO_GroupContact::removeContactsFromGroup($contacts, $group_id, 'Email');
         }
       }
+      else {
+        $notremoved = TRUE;
+      }
       if ($notremoved) {
         unset($groups[$group_id]);
       }
     }
 
-    $ue = new CRM_Mailing_Event_BAO_Unsubscribe();
-    $ue->event_queue_id = $queue_id;
-    $ue->org_unsubscribe = 0;
-    $ue->time_stamp = date('YmdHis');
-    $ue->save();
+    if (!$notremoved) {
+      $ue = new CRM_Mailing_Event_BAO_Unsubscribe();
+      $ue->event_queue_id = $queue_id;
+      $ue->org_unsubscribe = 0;
+      $ue->time_stamp = date('YmdHis');
+      $ue->save();
+    }
 
     $transaction->commit();
     return $groups;
