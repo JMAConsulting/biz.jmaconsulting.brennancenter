@@ -1,8 +1,8 @@
 <?php
 
 require_once 'brennancentre.civix.php';
-define('THANKYOU_SINGUP_PROFILE_ID', 13);
-define('SINGUP_PROFILE_ID', 18);
+define('THANKYOU_SIGNUP_PROFILE_ID', 13);
+define('SIGNUP_PROFILE_ID', 18);
 /**
  * Implementation of hook_civicrm_config
  */
@@ -71,7 +71,7 @@ function brennancentre_civicrm_managed(&$entities) {
 }
 
 function brennancentre_civicrm_validate($formName, &$fields, &$files, &$form) {
-  if ('CRM_Profile_Form_Edit' == $formName && $form->getVar('_gid') == SINGUP_PROFILE_ID) {
+  if ('CRM_Profile_Form_Edit' == $formName && $form->getVar('_gid') == SIGNUP_PROFILE_ID) {
     global $user;
     if ($user->uid == 0 && CRM_Utils_Array::value('htmlForm', $fields)) {
       $form->setElementError('g-recaptcha-response', NULL);
@@ -81,7 +81,7 @@ function brennancentre_civicrm_validate($formName, &$fields, &$files, &$form) {
 }
 
 function brennancentre_civicrm_buildForm($formName, &$form) {
-  if ($formName == 'CRM_Profile_Form_Edit' && $form->getVar('_gid') == THANKYOU_SINGUP_PROFILE_ID) {
+  if ($formName == 'CRM_Profile_Form_Edit' && $form->getVar('_gid') == THANKYOU_SIGNUP_PROFILE_ID) {
     $form->_elements[$form->_elementIndex['buttons']]->_elements[0]->_attributes['value'] = ts('Submit');
     CRM_Core_Resources::singleton()->addStyle('
       div.crm-profile-name-Thank_you_for_signing_up_ div.crm-submit-buttons span.crm-button-type-cancel
@@ -117,7 +117,7 @@ function brennancentre_civicrm_buildForm($formName, &$form) {
 function brennancentre_civicrm_alterMailParams(&$params, $context) {
   if (!empty($params['html'])) {
     $dochtml = new DOMDocument();
-    $dochtml->loadHTML($params['html']);
+    @$dochtml->loadHTML($params['html']);
     $imgTags = $dochtml->getElementsByTagName('img');
     
     foreach($imgTags as $imgTag) {
