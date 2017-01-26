@@ -2,7 +2,7 @@ jQuery(document).ready(function() {
 var recaptcha4;
 var myCallBacks = function() {
 	    recaptcha4 = grecaptcha.render('recaptcha4', {
-		'sitekey' : '6Ld9NSkTAAAAAFMX73jZa1RAC6ImDWDsQV3_icUn', //Replace this with your Site key
+		'sitekey' : '6LcmIBMUAAAAAOJL-aNTzPZA24Kn7cI5x4Bsum6y', //Replace this with your Site key
 		'theme' : 'light'
             });
 	
@@ -10,23 +10,23 @@ var myCallBacks = function() {
 };
 myCallBacks();
     checkCaptcha = function() {
-	cj("div.captcha_dialog3").dialog({
+	CRM.$("div.captcha_dialog3").dialog({
             title: 'Captcha',
             modal: true,
             height: 200,
             width: 350,
 open: function (event, ui) {
- cj('.ui-dialog').css('z-index',10000);
+ CRM.$('.ui-dialog').css('z-index',10000);
 },
             buttons: {
                 "Cancel": function() {
-                    cj(this).dialog("close");
+                    CRM.$(this).dialog("close");
                     return false;
                 },
                 'Submit': function() {
                     if (validateCaptcha()) {
-                        cj(this).dialog("close");
-                        cj("#submitonce3").click();
+                        CRM.$(this).dialog("close");
+                        CRM.$("#submitonce3").click();
                     }
                 }
             }
@@ -34,17 +34,17 @@ open: function (event, ui) {
 	});
     }
 
-    cj("#submitbutton3").click(function (e) {
+    CRM.$("#submitbutton3").click(function (e) {
 	e.preventDefault();
 	checkCaptcha();
 	return true;
     });
 
     function validateCaptcha() {
-        var recaptchaValue = cj("#g-recaptcha-response-2").val();
+        var recaptchaValue = CRM.$("#g-recaptcha-response-2").val();
 	if (recaptchaValue) {
 	    var callbackURL = '/civicrm/ajax/rest?className=CRM_Brennancentre_Page_AJAX&fnName=validateCaptcha';
-	    var tdest = cj.ajax({
+	    var tdest = CRM.$.ajax({
 		type: 'POST',
 		url: callbackURL, // The file we're making the request to
 		dataType: 'html',
@@ -54,7 +54,7 @@ open: function (event, ui) {
 		},
                 timeout: 2000
             }).responseText;
-	    var response = cj.parseJSON(tdest);
+	    var response = CRM.$.parseJSON(tdest);
 	    if (response.isError == false) {
 		return true;
 	    }
