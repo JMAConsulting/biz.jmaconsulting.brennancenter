@@ -70,7 +70,7 @@ function brennancentre_civicrm_managed(&$entities) {
   return _brennancentre_civix_civicrm_managed($entities);
 }
 
-function brennancentre_civicrm_validate($formName, &$fields, &$files, &$form) {
+function brennancentre_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   if ('CRM_Profile_Form_Edit' == $formName && $form->getVar('_gid') == SINGUP_PROFILE_ID) {
     global $user;
     if ($user->uid == 0 && CRM_Utils_Array::value('htmlForm', $fields)) {
