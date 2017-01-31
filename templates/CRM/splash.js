@@ -1,4 +1,12 @@
 jQuery(document).ready(function() {
+
+CRM.$("form#Edit").bind("keypress", function (e) {
+      if (CRM.$('#splashify').length !== 0 && e.keyCode == 13) {
+        return false;
+      }
+    });
+
+
 var recaptcha4;
 var myCallBacks = function() {
 	    recaptcha4 = grecaptcha.render('recaptcha4', {
