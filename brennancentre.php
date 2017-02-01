@@ -114,6 +114,14 @@ function brennancentre_civicrm_buildForm($formName, &$form) {
   }
 }
 
+function brennancentre_civicrm_postProcess($formName, &$form) {
+  if ($formName == "CRM_Import_Form_Preview") {
+    // LCD crank up the resource vals during import.
+    ini_set('max_execution_time', 7200);
+    ini_set('memory_limit', '2048M');
+  }
+}
+
 function brennancentre_civicrm_alterMailParams(&$params, $context) {
   if (!empty($params['html'])) {
     $dochtml = new DOMDocument();
