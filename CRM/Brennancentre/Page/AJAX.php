@@ -49,7 +49,7 @@ class CRM_Brennancentre_Page_AJAX {
       // Return error code if there is no captcha
       http_response_code(401); 
     }
-    $recaptchaKey = '6LcmIBMUAAAAAEEgiezy5sU4bUPLJfNdzjxtRdzI';
+    $recaptchaKey = '6Ld9NSkTAAAAADk3cf9kYt0koZyufTVlHXOgbWgP';
     $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaKey}&response={$captcha}");
     $response = json_decode($response);
     $output = array('isError' => FALSE);

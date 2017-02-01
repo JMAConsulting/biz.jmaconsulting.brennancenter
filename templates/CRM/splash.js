@@ -2,7 +2,7 @@ jQuery(document).ready(function() {
 var recaptcha4;
 var myCallBacks = function() {
 	    recaptcha4 = grecaptcha.render('recaptcha4', {
-		'sitekey' : '6LcmIBMUAAAAAOJL-aNTzPZA24Kn7cI5x4Bsum6y', //Replace this with your Site key
+		'sitekey' : '6Ld9NSkTAAAAAFMX73jZa1RAC6ImDWDsQV3_icUn', //Replace this with your Site key
 		'theme' : 'light'
             });
 	
