@@ -10,11 +10,11 @@ CRM.$("form#Edit").bind("keypress", function (e) {
 var recaptcha4;
 var myCallBacks = function() {
 	    recaptcha4 = grecaptcha.render('recaptcha4', {
-		'sitekey' : '6Ld9NSkTAAAAAFMX73jZa1RAC6ImDWDsQV3_icUn', //Replace this with your Site key
+		'sitekey' : '####', //Replace this with your Site key
 		'theme' : 'light'
             });
-	
-    
+
+
 };
 myCallBacks();
     checkCaptcha = function() {
